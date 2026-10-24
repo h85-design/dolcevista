@@ -1,0 +1,478 @@
+<title>Dolce Vista</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: une seule scène plein cadre. Le fond, l'encre et le nom géant changent avec la saveur. Un tiramisu en 3D flotte au centre, les infos et la quantité sont en bas. Dessous, une feuille crème pour la commande. */
+:root{
+  --bg:#BCD08F;
+  --ink:#1C2A12;
+  --paper:#FFF6E8;
+  --paper-ink:#2B1A12;
+  --paper-muted:#7C6A5E;
+  --paper-line:#EADBC6;
+  --font-display:"Instrument Serif","Times New Roman",serif;
+  --font-body:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;
+  transition:background-color .7s ease,color .7s ease;
+  padding-block:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+button{font-family:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:8px}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--font-display);font-weight:400;margin:0;line-height:1}
+
+/* en-tête */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px}
+.logo{font-family:var(--font-display);font-style:italic;font-size:1.7rem;text-decoration:none;line-height:1}
+.cartpill{display:inline-flex;align-items:center;gap:10px;border:1.5px solid var(--ink);border-radius:999px;padding:9px 18px;font-size:.9rem;font-weight:500;text-decoration:none;transition:background-color .3s,color .3s,border-color .7s}
+.cartpill:hover{background:var(--ink);color:var(--bg)}
+
+/* scène */
+.hero{position:relative;overflow-x:clip;padding-bottom:clamp(28px,4vw,48px)}
+.intro{position:relative;z-index:3;padding-top:clamp(8px,2vw,24px)}
+.eyebrow{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin:0 0 12px;opacity:.7}
+.intro h1{font-size:clamp(1.9rem,4vw,3rem);letter-spacing:-0.01em;max-width:16ch}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.stage{position:relative;display:grid;place-items:center;min-height:clamp(320px,50vw,500px);touch-action:pan-y}
+.giants{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;user-select:none}
+.giants span{grid-area:1/1;font-family:var(--font-display);font-style:italic;font-size:clamp(5.2rem,21vw,17rem);line-height:.9;letter-spacing:-0.03em;white-space:nowrap;opacity:0;transform:translateY(40px);transition:opacity .6s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+.giants span[data-pos="0"]{opacity:1;transform:none}
+.slices{position:relative;z-index:2;display:grid;place-items:center;width:min(74vw,470px)}
+.slices .item{grid-area:1/1;width:100%;opacity:0;transition:opacity .6s ease,transform .8s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.slices .item[data-pos="0"]{opacity:1;transform:none}
+.slices .item[data-pos="1"]{transform:translateX(55%) rotate(9deg) scale(.9)}
+.slices .item[data-pos="-1"]{transform:translateX(-55%) rotate(-9deg) scale(.9)}
+.slices svg{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 30px 28px rgba(0,0,0,.18))}
+.slices .item[data-pos="0"] svg{animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-10px)}}
+.arrow{position:absolute;top:50%;z-index:4;width:52px;height:52px;margin-top:-26px;border-radius:50%;border:1.5px solid var(--ink);background:transparent;cursor:pointer;font-size:1.3rem;line-height:1;transition:background-color .3s,color .3s,border-color .7s}
+.arrow:hover{background:var(--ink);color:var(--bg)}
+.arrow.prev{left:0}.arrow.next{right:0}
+
+/* poussière qui tombe */
+.dust{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.dust i{position:absolute;top:-12px;border-radius:50%;background:var(--ink);opacity:.35;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(760px) translateX(14px)}}
+
+/* infos */
+.info{position:relative;z-index:3;display:grid;grid-template-columns:minmax(0,1.3fr) auto auto;gap:clamp(20px,4vw,56px);align-items:end}
+.count{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.7;margin-bottom:10px}
+.info h2{font-size:clamp(2.2rem,5vw,3.6rem);margin-bottom:10px}
+.info p{margin:0;max-width:40ch;font-size:1rem;opacity:.85}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pills button,.cats button{padding:10px 18px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;cursor:pointer;font-size:.9rem;font-weight:500;transition:background-color .3s,color .3s,border-color .7s}
+.pills button[aria-pressed="true"],.cats button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.buy{display:flex;align-items:center;gap:12px}
+.step{display:flex;align-items:center;gap:4px;border:1.5px solid var(--ink);border-radius:999px;padding:4px;transition:border-color .7s}
+.step button{width:40px;height:40px;border-radius:50%;border:0;background:transparent;cursor:pointer;font-size:1.2rem;line-height:1;transition:background-color .3s,color .3s}
+.step button:hover{background:var(--ink);color:var(--bg)}
+.step output{min-width:30px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.buy small{font-size:.8rem;opacity:.7;line-height:1.3;max-width:9ch}
+
+/* feuille de commande */
+.sheet{background:var(--paper);color:var(--paper-ink);border-radius:40px 40px 0 0;margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-block:clamp(40px,6vw,80px) 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sheet .wrap{padding-bottom:0}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-bottom:clamp(40px,6vw,72px)}
+.steps div{border-top:1.5px solid var(--paper-ink);padding-top:16px}
+.steps small{display:block;font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-muted);font-weight:600;margin-bottom:8px}
+.steps h3{font-size:1.7rem;margin-bottom:6px}
+.steps p{margin:0;color:var(--paper-muted);font-size:.95rem}
+.order{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);padding-bottom:clamp(40px,6vw,72px)}
+.order h2{font-size:clamp(2.4rem,5vw,3.8rem);margin-bottom:12px}
+.order .sub{color:var(--paper-muted);margin:0 0 28px;max-width:40ch}
+.recap{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.recap li{display:flex;justify-content:space-between;gap:12px;padding:14px 16px;background:#fff;border-radius:16px;font-size:.95rem}
+.recap li.empty{color:var(--paper-muted);background:transparent;border:1.5px dashed var(--paper-line)}
+.field{margin-bottom:18px}
+label{display:block;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--paper-muted);font-weight:600;margin-bottom:8px}
+input[type=text],input[type=tel],select,textarea{width:100%;background:#fff;border:1.5px solid var(--paper-line);border-radius:16px;color:var(--paper-ink);padding:14px 16px;font:inherit;font-size:.95rem}
+textarea{min-height:140px;resize:vertical}
+select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--paper-muted) 50%),linear-gradient(135deg,var(--paper-muted) 50%,transparent 50%);background-position:calc(100% - 22px) 50%,calc(100% - 16px) 50%;background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:40px}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.row2 .field{min-width:0}
+.err{color:#A3261F;font-size:.9rem;margin:0 0 14px;font-weight:500}
+details.preview{margin-top:20px;color:var(--paper-muted);font-size:.9rem}
+details.preview summary{cursor:pointer}
+details.preview textarea{margin-top:10px;min-height:170px}
+.btn{display:inline-block;text-decoration:none;background:var(--paper-ink);color:var(--paper);padding:15px 28px;border-radius:999px;font-weight:600;font-size:.95rem;border:0;cursor:pointer;transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}
+.hint{font-size:.85rem;color:var(--paper-muted);margin:12px 0 0}
+footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:24px 36px;border-top:1px solid var(--paper-line);color:var(--paper-muted);font-size:.85rem}
+
+@media (max-width:860px){
+  .info{grid-template-columns:1fr;align-items:start}
+  .steps,.order{grid-template-columns:1fr}
+  .arrow{width:44px;height:44px;margin-top:-22px}
+  .slices{width:min(66vw,380px)}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .dust{display:none}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#accueil" id="brandLogo"></a>
+    <a class="cartpill" href="#commander">Ma commande <span id="cartN">0</span></a>
+  </header>
+
+  <section class="hero" id="accueil">
+    <div class="dust" id="dust" aria-hidden="true"></div>
+
+    <div class="intro">
+      <p class="eyebrow">Desserts faits maison</p>
+      <h1>Bienvenue chez <span id="brandHero"></span></h1>
+      <div class="cats" id="cats" role="group" aria-label="Catégories"></div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="giants" id="giants" aria-hidden="true"></div>
+      <button class="arrow prev" type="button" id="prev" aria-label="Saveur précédente">←</button>
+      <div class="slices" id="slices"></div>
+      <button class="arrow next" type="button" id="next" aria-label="Saveur suivante">→</button>
+    </div>
+
+    <div class="info">
+      <div aria-live="polite">
+        <div class="count" id="count"></div>
+        <h2 id="fname"></h2>
+        <p id="fdesc"></p>
+      </div>
+      <div class="pills" id="pills" role="group" aria-label="Choisir une saveur"></div>
+      <div class="buy">
+        <div class="step">
+          <button type="button" id="minus" aria-label="Retirer un">−</button>
+          <output id="qty">0</output>
+          <button type="button" id="plus" aria-label="Ajouter un">+</button>
+        </div>
+        <small>dans ma commande</small>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="sheet" id="commander">
+  <div class="wrap">
+    <div class="steps">
+      <div><small>Étape 1</small><h3>Tu choisis</h3><p>Choisis une catégorie, fais défiler les saveurs et ajoute tes desserts avec le plus.</p></div>
+      <div><small>Étape 2</small><h3>Tu envoies</h3><p>Tu remplis ton nom, ta commune et ton numéro de téléphone, puis tu envoies.</p></div>
+      <div><small>Étape 3</small><h3>Tu te régales</h3><p>On t'appelle pour confirmer ta commande et ta livraison.</p></div>
+    </div>
+
+    <div class="order">
+      <div>
+        <h2>Ta commande</h2>
+        <p class="sub">Vérifie ton choix, remplis tes informations de livraison et envoie ta commande. On te rappelle pour confirmer.</p>
+        <ul class="recap" id="recap"></ul>
+      </div>
+      <div>
+        <form class="form" id="form" novalidate>
+          <div class="row2">
+            <div class="field"><label for="fn">Prénom</label><input type="text" id="fn" autocomplete="given-name"></div>
+            <div class="field"><label for="ln">Nom</label><input type="text" id="ln" autocomplete="family-name"></div>
+          </div>
+          <div class="field"><label for="commune">Commune</label><select id="commune"></select></div>
+          <div class="field">
+            <label for="addr">Quartier et adresse</label>
+            <input type="text" id="addr" list="quartiers" placeholder="Par exemple : Maraval, rue ..." autocomplete="street-address">
+            <datalist id="quartiers"></datalist>
+          </div>
+          <div class="field"><label for="tel">Numéro de téléphone</label><input type="tel" id="tel" inputmode="tel" placeholder="0555 12 34 56" autocomplete="tel"></div>
+          <p class="err" id="err" role="alert" hidden></p>
+          <a class="btn" id="send" href="#commander" target="_blank" rel="noopener">Envoyer ma commande</a>
+          <p class="hint" id="copyHint" role="status">On te rappelle pour confirmer ta commande et ta livraison.</p>
+          <details class="preview"><summary>Voir le message qui sera envoyé</summary><textarea id="msg" readonly></textarea></details>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <span id="brandFoot"></span>
+      <span>Tiramisus, gaufres et crêpes faits maison</span>
+    </footer>
+  </div>
+</section>
+
+<script>
+/* À MODIFIER : le nom de la boutique, les catégories et leurs produits. */
+var BRAND = "Dolce Vista";
+var CATS = [
+  {id:"tiramisu", name:"Tiramisus", one:"Tiramisu", kind:"tiramisu", items:[
+    {id:"pistache", name:"Pistache", bg:"#BCD08F", ink:"#1C2A12", dust:"#5E7F3A", sponge:"#9DBB6B", desc:"Une crème de pistache onctueuse, des biscuits fins et des éclats de pistache grillée."},
+    {id:"fraise", name:"Fraise", bg:"#F3B3BC", ink:"#4B1522", dust:"#C93C5A", sponge:"#E98A9A", desc:"Une crème légère à la fraise, des biscuits moelleux et une poudre de fraise sur le dessus."},
+    {id:"speculoos", name:"Speculoos", bg:"#E2A468", ink:"#3A1D0C", dust:"#7A4520", sponge:"#B9773F", desc:"Des biscuits au speculoos, une crème au caramel et un croquant de speculoos."}
+  ]},
+  {id:"gaufre", name:"Gaufres", one:"Gaufre", kind:"gaufre", items:[
+    {id:"chocolat", name:"Chocolat", bg:"#D8A48F", ink:"#3B1D14", sauce:"#4A2515", garnish:"#F4E3C8", desc:"Une gaufre croustillante, nappée de chocolat et parsemée de noisettes."},
+    {id:"caramel", name:"Caramel", bg:"#EFB873", ink:"#4A2C05", sauce:"#B8661C", garnish:"#FFF1D6", desc:"Une gaufre dorée avec un caramel au beurre salé et des éclats croustillants."},
+    {id:"myrtille", name:"Myrtille", bg:"#BFB4E3", ink:"#2E1B4A", sauce:"#5B3E9A", garnish:"#2F2A6B", desc:"Une gaufre moelleuse avec un coulis de myrtilles et des myrtilles fraîches."}
+  ]},
+  {id:"crepe", name:"Crêpes", one:"Crêpe", kind:"crepe", items:[
+    {id:"nutella", name:"Nutella", bg:"#D3A47C", ink:"#35190C", sauce:"#4A2515", garnish:"#F4E3C8", desc:"Une crêpe fine, fourrée de pâte à tartiner et pliée en éventail."},
+    {id:"citron", name:"Citron", bg:"#EFEA8C", ink:"#3F3B05", sauce:"#F2D43A", garnish:"#FFFFFF", desc:"Une crêpe au sucre et au citron, fraîche et acidulée."},
+    {id:"chantilly", name:"Chantilly", bg:"#BFE0E6", ink:"#12363F", sauce:"#D9456B", garnish:"#FFFFFF", desc:"Une crêpe avec un coulis de fruits rouges et de la chantilly maison."}
+  ]}
+];
+
+var counts = {}, catI = 0, cur = 0;
+CATS.forEach(function(c){ c.items.forEach(function(it){ counts[c.id + ":" + it.id] = 0; }); });
+function key(c, it){ return c.id + ":" + it.id; }
+function label(c, it){ return c.one + " " + it.name; }
+
+function plate(){
+  return '<ellipse cx="190" cy="274" rx="165" ry="16" fill="#000" opacity=".14"/>' +
+    '<ellipse cx="180" cy="238" rx="172" ry="58" fill="#FFF6E8"/>' +
+    '<ellipse cx="180" cy="234" rx="142" ry="42" fill="#fff" opacity=".7"/>';
+}
+
+function tiramisuSVG(f, uid){
+  var cream = "#FBF1DC";
+  var ys = [[70,38,cream],[108,24,f.sponge],[132,44,cream],[176,24,f.sponge],[200,50,cream]];
+  var front = "", side = "";
+  ys.forEach(function(l){
+    front += '<rect x="60" y="' + l[0] + '" width="240" height="' + l[1] + '" fill="' + l[2] + '"/>';
+    side += '<rect x="300" y="' + l[0] + '" width="30" height="' + l[1] + '" fill="' + l[2] + '"/>';
+  });
+  var dots = [[100,62],[130,56],[160,64],[190,54],[220,62],[250,56],[280,64],[210,52],[150,52],[120,66],[240,52],[180,66]];
+  var dd = "";
+  dots.forEach(function(p, i){ dd += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + (i % 3 === 0 ? 2.6 : 1.8) + '" fill="#fff" opacity=".4"/>'; });
+  return '<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tiramisu ' + f.name + '">' +
+    '<ellipse cx="190" cy="270" rx="165" ry="18" fill="#000" opacity=".14"/>' +
+    '<ellipse cx="180" cy="260" rx="165" ry="24" fill="#FFF6E8"/>' +
+    '<ellipse cx="180" cy="256" rx="135" ry="16" fill="#fff" opacity=".7"/>' +
+    '<g transform="matrix(1,-0.7333,0,1,0,220)">' + side + '<rect x="300" y="70" width="30" height="180" fill="#000" opacity=".2"/></g>' +
+    '<g>' + front + '</g>' +
+    '<polygon points="60,70 300,70 330,48 90,48" fill="' + f.dust + '"/>' + dd +
+    '<rect x="60" y="70" width="240" height="5" fill="#000" opacity=".08"/>' +
+    '</svg>';
+}
+
+function gaufreSVG(f, uid){
+  var grid = "", x, y;
+  for (x = 40; x <= 320; x += 24) grid += '<line x1="' + x + '" y1="90" x2="' + x + '" y2="240"/>';
+  for (y = 96; y <= 232; y += 18) grid += '<line x1="30" y1="' + y + '" x2="330" y2="' + y + '"/>';
+  var pts = [[150,150,8],[192,144,9],[222,158,8],[168,170,7],[206,172,7],[250,150,6],[128,162,6]];
+  var g = "";
+  pts.forEach(function(p){ g += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + p[2] + '" fill="' + f.garnish + '"/><circle cx="' + (p[0] - 2) + '" cy="' + (p[1] - 2) + '" r="' + (p[2] / 3) + '" fill="#fff" opacity=".45"/>'; });
+  return '<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gaufre ' + f.name + '">' +
+    '<defs><clipPath id="wc' + uid + '"><ellipse cx="180" cy="160" rx="140" ry="58"/></clipPath></defs>' +
+    plate() +
+    '<ellipse cx="180" cy="176" rx="140" ry="58" fill="#A8732E"/>' +
+    '<ellipse cx="180" cy="160" rx="140" ry="58" fill="#E6B567"/>' +
+    '<g clip-path="url(#wc' + uid + ')" stroke="#C58A3F" stroke-width="3.5" opacity=".85">' + grid + '</g>' +
+    '<ellipse cx="182" cy="158" rx="88" ry="32" fill="' + f.sauce + '"/>' +
+    '<ellipse cx="108" cy="176" rx="11" ry="15" fill="' + f.sauce + '"/>' +
+    '<ellipse cx="254" cy="178" rx="10" ry="13" fill="' + f.sauce + '"/>' +
+    '<ellipse cx="160" cy="148" rx="34" ry="8" fill="#fff" opacity=".22"/>' + g +
+    '</svg>';
+}
+
+function crepeSVG(f, uid){
+  var spots = [[130,150,5],[160,128,4],[200,140,6],[230,120,4],[180,176,5],[240,158,4],[110,134,4],[150,184,4]];
+  var sp = "";
+  spots.forEach(function(p){ sp += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + p[2] + '" fill="#B07A2E" opacity=".25"/>'; });
+  return '<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Crêpe ' + f.name + '">' +
+    plate() +
+    '<path d="M180 222 L56 156 Q180 46 304 156 Z" fill="#E9C27D" stroke="#C99A4E" stroke-width="2.5" stroke-linejoin="round"/>' + sp +
+    '<path d="M180 222 L110 100" stroke="#C99A4E" stroke-width="2.5" opacity=".6" fill="none"/>' +
+    '<path d="M180 222 L250 100" stroke="#C99A4E" stroke-width="2.5" opacity=".6" fill="none"/>' +
+    '<path d="M92 156 Q122 126 150 156 T208 156 T268 146" stroke="' + f.sauce + '" stroke-width="11" stroke-linecap="round" fill="none"/>' +
+    '<circle cx="180" cy="124" r="19" fill="' + f.garnish + '"/><circle cx="162" cy="136" r="14" fill="' + f.garnish + '"/><circle cx="199" cy="136" r="14" fill="' + f.garnish + '"/>' +
+    '<circle cx="173" cy="116" r="5" fill="#000" opacity=".06"/><circle cx="176" cy="116" r="4" fill="#fff" opacity=".5"/>' +
+    '</svg>';
+}
+
+function drawItem(c, it, uid){
+  if (c.kind === "gaufre") return gaufreSVG(it, uid);
+  if (c.kind === "crepe") return crepeSVG(it, uid);
+  return tiramisuSVG(it, uid);
+}
+
+function posOf(i, n){ var p = (i - cur + n) % n; return p === n - 1 && n > 2 ? -1 : p; }
+
+function buildStatic(){
+  document.getElementById("brandLogo").textContent = BRAND;
+  document.getElementById("brandHero").textContent = BRAND;
+  document.getElementById("brandFoot").textContent = "© " + BRAND;
+
+  var cats = document.getElementById("cats");
+  CATS.forEach(function(c, i){
+    var b = document.createElement("button"); b.type = "button"; b.textContent = c.name;
+    b.addEventListener("click", function(){ setCat(i); });
+    cats.appendChild(b);
+  });
+
+  var dust = document.getElementById("dust");
+  for (var k = 0; k < 18; k++){
+    var d = document.createElement("i");
+    var size = 3 + Math.random() * 5;
+    d.style.left = (Math.random() * 100) + "%";
+    d.style.width = d.style.height = size + "px";
+    d.style.animationDuration = (9 + Math.random() * 9) + "s";
+    d.style.animationDelay = (-Math.random() * 14) + "s";
+    dust.appendChild(d);
+  }
+}
+
+function setCat(i){
+  catI = i; cur = 0;
+  var c = CATS[catI];
+  var g = document.getElementById("giants"), s = document.getElementById("slices"), p = document.getElementById("pills");
+  g.innerHTML = ""; s.innerHTML = ""; p.innerHTML = "";
+  c.items.forEach(function(it, k){
+    var span = document.createElement("span"); span.textContent = it.name; g.appendChild(span);
+    var el = document.createElement("div"); el.className = "item"; el.innerHTML = drawItem(c, it, catI + "" + k); s.appendChild(el);
+    var b = document.createElement("button"); b.type = "button"; b.textContent = it.name;
+    b.addEventListener("click", function(){ go(k); });
+    p.appendChild(b);
+  });
+  document.querySelectorAll("#cats button").forEach(function(el, k){ el.setAttribute("aria-pressed", k === catI ? "true" : "false"); });
+  go(0);
+}
+
+function go(i){
+  var c = CATS[catI], n = c.items.length;
+  cur = (i + n) % n;
+  var it = c.items[cur];
+  var r = document.documentElement.style;
+  r.setProperty("--bg", it.bg); r.setProperty("--ink", it.ink);
+  document.querySelectorAll("#giants span").forEach(function(el, k){ el.dataset.pos = posOf(k, n); });
+  document.querySelectorAll("#slices .item").forEach(function(el, k){ el.dataset.pos = posOf(k, n); });
+  document.querySelectorAll("#pills button").forEach(function(el, k){ el.setAttribute("aria-pressed", k === cur ? "true" : "false"); });
+  document.getElementById("count").textContent = c.one + " · 0" + (cur + 1) + " / 0" + n;
+  document.getElementById("fname").textContent = label(c, it);
+  document.getElementById("fdesc").textContent = it.desc;
+  refresh();
+}
+
+function refresh(){
+  var total = 0, lines = [];
+  CATS.forEach(function(c){ c.items.forEach(function(it){
+    var n = counts[key(c, it)]; total += n;
+    if (n > 0) lines.push({name:label(c, it), n:n});
+  }); });
+  document.getElementById("cartN").textContent = total;
+  var c0 = CATS[catI];
+  document.getElementById("qty").textContent = counts[key(c0, c0.items[cur])];
+
+  var ul = document.getElementById("recap"); ul.innerHTML = "";
+  if (!lines.length){
+    var e = document.createElement("li"); e.className = "empty"; e.textContent = "Rien pour l'instant. Ajoute un dessert plus haut."; ul.appendChild(e);
+  } else lines.forEach(function(l){
+    var li = document.createElement("li"), a = document.createElement("span"), b = document.createElement("span");
+    a.textContent = l.name; b.textContent = "× " + l.n; li.appendChild(a); li.appendChild(b); ul.appendChild(li);
+  });
+
+  updateMsg(lines);
+}
+
+function change(d){
+  var c = CATS[catI], k = key(c, c.items[cur]);
+  counts[k] = Math.max(0, Math.min(20, counts[k] + d));
+  refresh();
+}
+
+document.getElementById("prev").addEventListener("click", function(){ go(cur - 1); });
+document.getElementById("next").addEventListener("click", function(){ go(cur + 1); });
+document.getElementById("plus").addEventListener("click", function(){ change(1); });
+document.getElementById("minus").addEventListener("click", function(){ change(-1); });
+
+document.addEventListener("keydown", function(e){
+  var t = e.target && e.target.tagName;
+  if (t === "INPUT" || t === "TEXTAREA") return;
+  if (e.key === "ArrowLeft") go(cur - 1);
+  if (e.key === "ArrowRight") go(cur + 1);
+});
+
+var sx = null, stage = document.getElementById("stage");
+stage.addEventListener("pointerdown", function(e){ sx = e.clientX; });
+stage.addEventListener("pointerup", function(e){
+  if (sx === null) return;
+  var dx = e.clientX - sx; sx = null;
+  if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
+});
+
+/* À MODIFIER : ton numéro WhatsApp, avec l'indicatif, sans + ni espaces. Exemple : 213555123456 */
+var WHATSAPP = "";
+
+var COMMUNES = ["Oran","Bir El Djir","Es Senia","Sidi Chami","Hassi Bounif","Hassi Ben Okba","Gdyel","Aïn El Turk","Mers El Kébir","Bousfer","El Ançor","Misserghin","Boutlelis","Arzew","Bethioua","Marsat El Hadjadj","Aïn El Bia","El Braya","El Kerma","Aïn El Kerma","Boufatis","Tafraoui","Oued Tlelat","Ben Freha","Hassi Mefsoukh","Sidi Benyebka"];
+var QUARTIERS = ["Maraval","Canastel","Médioni","Gambetta","Saint-Eugène","Les Planteurs","Choupot","Plateau","Saint-Hubert","El Hamri","Les Castors","Sidi El Houari","Derb","Victor Hugo","Eckmühl","Bel Air","Miramar","Delmonte","Akid Lotfi","Les Palmiers","Hippodrome","Sananès"];
+var lastLines = [];
+
+function val(id){ return document.getElementById(id).value.trim(); }
+
+function problems(){
+  var p = [];
+  if (!lastLines.length) p.push("Ajoute au moins un dessert à ta commande.");
+  if (!val("fn")) p.push("Écris ton prénom.");
+  if (!val("ln")) p.push("Écris ton nom.");
+  if (!val("commune")) p.push("Choisis ta commune.");
+  if (!val("addr")) p.push("Écris ton quartier ou ton adresse.");
+  var tel = val("tel").replace(/[\s.\-]/g, "");
+  if (!/^(\+213|00213|0)\d{9}$/.test(tel)) p.push("Écris un numéro de téléphone valide, par exemple 0555 12 34 56.");
+  return p;
+}
+
+function buildMsg(){
+  var m = "Bonjour, je voudrais commander chez " + BRAND + " :\n";
+  m += lastLines.length ? lastLines.map(function(l){ return "- " + l.n + " × " + l.name; }).join("\n") : "- [ajoute tes desserts]";
+  m += "\n\nPrénom : " + (val("fn") || "…");
+  m += "\nNom : " + (val("ln") || "…");
+  m += "\nCommune : " + (val("commune") || "…");
+  m += "\nQuartier / adresse : " + (val("addr") || "…");
+  m += "\nTéléphone : " + (val("tel") || "…");
+  m += "\n\nMerci de me rappeler pour confirmer ma commande.";
+  return m;
+}
+
+function updateMsg(lines){
+  lastLines = lines || lastLines;
+  var m = buildMsg();
+  document.getElementById("msg").value = m;
+  document.getElementById("send").setAttribute("href", WHATSAPP ? "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(m) : "#commander");
+}
+
+function fillCommunes(){
+  var sel = document.getElementById("commune");
+  var o0 = document.createElement("option"); o0.value = ""; o0.textContent = "Choisis ta commune"; sel.appendChild(o0);
+  COMMUNES.forEach(function(c){ var o = document.createElement("option"); o.value = c; o.textContent = c; sel.appendChild(o); });
+  sel.addEventListener("change", function(){
+    var dl = document.getElementById("quartiers"); dl.innerHTML = "";
+    if (sel.value === "Oran") QUARTIERS.forEach(function(q){ var o = document.createElement("option"); o.value = q; dl.appendChild(o); });
+    updateMsg();
+  });
+}
+
+["fn","ln","addr","tel"].forEach(function(id){ document.getElementById(id).addEventListener("input", function(){ updateMsg(); }); });
+
+document.getElementById("send").addEventListener("click", function(e){
+  var err = document.getElementById("err"), hint = document.getElementById("copyHint");
+  var p = problems();
+  if (p.length){ e.preventDefault(); err.hidden = false; err.textContent = p.join(" "); return; }
+  err.hidden = true;
+  if (!WHATSAPP){
+    e.preventDefault();
+    var ta = document.getElementById("msg");
+    var ok = function(){ hint.textContent = "Message copié. Colle-le dans ta conversation avec nous pour envoyer ta commande."; };
+    var fallback = function(){ ta.removeAttribute("readonly"); ta.focus(); ta.select(); ta.setSelectionRange(0, 9999); ta.setAttribute("readonly", ""); hint.textContent = "Copie le message sélectionné et envoie-le-nous."; };
+    try { navigator.clipboard.writeText(ta.value).then(ok, fallback); } catch (x) { fallback(); }
+  } else {
+    hint.textContent = "WhatsApp s'ouvre avec ta commande. Appuie sur envoyer, puis on t'appelle.";
+  }
+});
+
+fillCommunes();
+buildStatic();
+setCat(0);
+</script>
